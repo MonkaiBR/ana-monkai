@@ -258,23 +258,19 @@ body{color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direct
 <body>
  
 <!-- ══ LOGIN ══ -->
-<div id="login-screen">
-  <div class="login-card">
-    <div class="login-logo">🌿</div>
-    <div class="login-title">Ana · Monkai</div>
-    <div class="login-sub" id="login-sub">Digite sua senha para entrar</div>
-    <div style="margin:20px 0;display:flex;flex-direction:column;gap:10px">
-      <input type="password" id="senha-input" placeholder="Senha" 
-        style="background:var(--bg3);border:1.5px solid var(--border2);border-radius:10px;padding:13px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;outline:none;text-align:center;letter-spacing:0.1em;width:100%;transition:border-color 0.2s"
-        onkeydown="if(event.key==='Enter')tentarEntrar()"/>
-      <button onclick="tentarEntrar()" 
-        style="padding:13px;background:var(--accent);border:none;border-radius:10px;color:#0f1a0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;width:100%">
-        Entrar →
-      </button>
-    </div>
-    <div id="login-erro" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--red);min-height:16px;margin-bottom:8px"></div>
-    <div class="login-hint">Agente Financeira · Guaraná Monkai · Vinhedo/SP</div>
-    <div id="login-setup-txt" style="margin-top:12px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)"></div>
+<div id="login-screen" style="position:fixed;inset:0;background:#0f1a0f;z-index:999;display:flex;align-items:center;justify-content:center">
+  <div style="background:#1e2a1e;border:1px solid #3a4f3a;border-radius:20px;padding:36px 32px;max-width:320px;width:90%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,0.5)">
+    <div style="font-size:48px;margin-bottom:12px">🌿</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:26px;color:#bbf7d0;margin-bottom:4px">Ana · Monkai</div>
+    <div style="font-family:'DM Mono',monospace;font-size:11px;color:#6a8a6a;margin-bottom:24px">Agente Financeira · Vinhedo/SP</div>
+    <input type="password" id="senha-input" placeholder="Digite a senha" 
+      style="width:100%;background:#1c2a1c;border:1.5px solid #3a4f3a;border-radius:10px;padding:13px 16px;color:#e8f0e8;font-family:'DM Sans',sans-serif;font-size:16px;outline:none;text-align:center;margin-bottom:12px;display:block"/>
+    <button id="btn-entrar"
+      style="width:100%;padding:13px;background:#4ade80;border:none;border-radius:10px;color:#0f1a0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">
+      Entrar →
+    </button>
+    <div id="login-erro" style="font-family:'DM Mono',monospace;font-size:11px;color:#f87171;min-height:16px"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:#6a8a6a;margin-top:10px">Senha padrão: monkai</div>
   </div>
 </div>
  
@@ -649,37 +645,33 @@ let graficoVendas=null;
 // ══ LOGIN ══
 const SENHA_PADRAO = 'monkai';
 function initPIN(){
-  const senhaSalva = localStorage.getItem('ana_senha') || SENHA_PADRAO;
-  const setup = document.getElementById('login-setup-txt');
-  if(!localStorage.getItem('ana_senha')){
-    setup.textContent = 'Senha padrão: monkai — troque depois nas configurações';
-  }
-  setTimeout(()=>document.getElementById('senha-input')?.focus(), 300);
-}
-function tentarEntrar(){
   const input = document.getElementById('senha-input');
+  const btn   = document.getElementById('btn-entrar');
   const erro  = document.getElementById('login-erro');
-  const senha = input.value.trim();
-  const senhaSalva = localStorage.getItem('ana_senha') || SENHA_PADRAO;
-  if(!senha){ erro.textContent = 'Digite a senha.'; return; }
-  if(senha === senhaSalva){
-    erro.textContent = '';
-    input.value = '';
-    document.getElementById('login-screen').style.display = 'none';
-    iniciarApp();
-  } else {
-    erro.textContent = '❌ Senha incorreta. Tente novamente.';
-    input.value = '';
-    input.focus();
-    input.style.borderColor = 'var(--red)';
-    setTimeout(()=>input.style.borderColor='var(--border2)', 1500);
+  function tentar(){
+    const senha = input.value.trim();
+    const senhaSalva = localStorage.getItem('ana_senha') || SENHA_PADRAO;
+    if(!senha){ erro.textContent='Digite a senha.'; return; }
+    if(senha === senhaSalva){
+      erro.textContent='';
+      input.value='';
+      document.getElementById('login-screen').style.display='none';
+      iniciarApp();
+    } else {
+      erro.textContent='❌ Senha incorreta.';
+      input.value='';
+      input.focus();
+    }
   }
+  btn.addEventListener('click', tentar);
+  input.addEventListener('keydown', e=>{ if(e.key==='Enter') tentar(); });
+  input.focus();
 }
 function logout(){
   document.getElementById('login-screen').style.display='flex';
-  document.getElementById('senha-input').value='';
+  const input=document.getElementById('senha-input');
+  if(input){input.value='';setTimeout(()=>input.focus(),200);}
   document.getElementById('login-erro').textContent='';
-  setTimeout(()=>document.getElementById('senha-input')?.focus(), 300);
 }
  
 // ══ OMIE PROXY ══
