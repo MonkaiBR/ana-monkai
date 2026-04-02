@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Ana · Agente Financeira · Guaraná Monkai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1a0f;
+  --bg2:#162016;
+  --bg3:#1c2a1c;
+  --surface:#1e2a1e;
+  --surface2:#253025;
+  --border:#2d3f2d;
+  --border2:#3a4f3a;
+  --text:#e8f0e8;
+  --text2:#a8c0a8;
+  --muted:#6a8a6a;
+  --accent:#4ade80;
+  --accent2:#86efac;
+  --accent3:#bbf7d0;
+  --yellow:#fbbf24;
+  --red:#f87171;
+  --blue:#60a5fa;
+  --ana:#4ade80;
+  --user-bg:#1a2f3a;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column}
+#app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* ── TOP NAV ── */
+.top-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;height:56px;flex-shrink:0;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  gap:12px;
+}
+.nav-brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nav-avatar{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,#166534,#4ade80);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+  box-shadow:0 0 12px rgba(74,222,128,0.3);
+}
+.nav-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--accent3);letter-spacing:0.01em}
+.nav-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.pip{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;flex-shrink:0}
+.nav-tabs{display:flex;gap:2px;flex-shrink:0}
+.nav-tab{
+  padding:6px 14px;border-radius:8px;
+  font-family:'DM Mono',monospace;font-size:11px;font-weight:500;
+  cursor:pointer;color:var(--muted);border:none;
+  background:transparent;transition:all 0.18s;
+  white-space:nowrap;display:flex;align-items:center;gap:5px;
+}
+.nav-tab:hover{color:var(--accent2);background:rgba(74,222,128,0.06)}
+.nav-tab.active{color:var(--accent);background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2)}
+.nav-actions{display:flex;gap:6px;flex-shrink:0}
+.hdr-btn{
+  display:flex;align-items:center;gap:5px;padding:6px 12px;
+  border-radius:8px;font-family:'DM Mono',monospace;font-size:11px;
+  cursor:pointer;border:1px solid var(--border2);
+  background:var(--surface);color:var(--text2);transition:all 0.2s;white-space:nowrap;
+}
+.hdr-btn:hover{border-color:var(--accent);color:var(--accent)}
+.hdr-btn.primary{background:var(--accent);border-color:var(--accent);color:#0f1a0f;font-weight:700}
+.hdr-btn.primary:hover{background:var(--accent2)}
+
+/* ── TAB PAGES ── */
+.tab-page{display:none;flex:1;overflow:hidden;flex-direction:column}
+.tab-page.active{display:flex}
+
+/* ── CHAT ── */
+.messages-area{flex:1;overflow-y:auto;padding:20px 0 8px;scroll-behavior:smooth}
+.messages-area::-webkit-scrollbar{width:3px}
+.messages-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.messages-inner{max-width:720px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:16px}
+
+.msg{display:flex;gap:10px;animation:fadeUp 0.3s ease}
+.msg.user{flex-direction:row-reverse}
+.msg-avatar{width:32px;height:32px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;margin-top:2px}
+.msg.ana .msg-avatar{background:linear-gradient(135deg,#166534,#4ade80);box-shadow:0 0 10px rgba(74,222,128,0.25)}
+.msg.user .msg-avatar{background:var(--user-bg);border:1px solid var(--border2)}
+.msg-content{flex:1;max-width:84%}
+.msg.user .msg-content{display:flex;flex-direction:column;align-items:flex-end}
+.msg-sender{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;color:var(--muted);margin-bottom:4px;text-transform:uppercase}
+.msg.ana .msg-sender{color:var(--accent)}
+.msg-bubble{
+  padding:12px 16px;border-radius:14px;
+  font-size:14px;line-height:1.75;white-space:pre-wrap;word-break:break-word;
+}
+.msg.ana .msg-bubble{
+  background:var(--surface);border:1px solid var(--border);
+  border-top-left-radius:4px;color:var(--text);
+  box-shadow:0 2px 12px rgba(0,0,0,0.3);
+}
+.msg.user .msg-bubble{
+  background:var(--user-bg);border:1px solid #2d4a5a;
+  border-top-right-radius:4px;color:#bde0f7;
+}
+.omie-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);
+  background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);
+  border-radius:100px;padding:4px 10px;margin-bottom:6px;
+}
+.typing-indicator{
+  display:flex;align-items:center;gap:4px;
+  padding:12px 16px;background:var(--surface);
+  border:1px solid var(--border);border-radius:14px;border-top-left-radius:4px;
+  width:fit-content;
+}
+.typing-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:bounce 1.2s infinite;opacity:0.6}
+.typing-dot:nth-child(2){animation-delay:0.2s}.typing-dot:nth-child(3){animation-delay:0.4s}
+
+.input-area{padding:12px 20px 16px;border-top:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.suggestions{max-width:720px;margin:0 auto 10px;display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:100px;padding:5px 14px;
+  font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);
+  cursor:pointer;transition:all 0.18s;white-space:nowrap;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(74,222,128,0.06)}
+.input-inner{max-width:720px;margin:0 auto;display:flex;gap:8px;align-items:flex-end}
+.input-wrap{
+  flex:1;background:var(--surface);border:1px solid var(--border2);
+  border-radius:12px;display:flex;align-items:flex-end;
+  padding:4px 4px 4px 14px;transition:border-color 0.2s;
+}
+.input-wrap:focus-within{border-color:var(--accent)}
+#user-input{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;
+  resize:none;max-height:110px;padding:7px 0;line-height:1.5;
+}
+#user-input::placeholder{color:var(--muted)}
+.btn-send{
+  width:38px;height:38px;background:var(--accent);border:none;
+  border-radius:9px;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;transition:all 0.2s;flex-shrink:0;
+}
+.btn-send:hover{background:var(--accent2);transform:scale(1.05)}
+.btn-send:disabled{opacity:0.4;cursor:default;transform:none}
+.btn-send svg{width:14px;height:14px;color:#0f1a0f}
+.input-hint{text-align:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:5px}
+
+/* ── FECHAMENTO ── */
+.fech-wrap{max-width:800px;margin:0 auto;padding:20px;overflow-y:auto;height:100%;display:flex;flex-direction:column;gap:16px}
+.fech-wrap::-webkit-scrollbar{width:3px}
+.fech-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+
+.fech-header{
+  background:linear-gradient(135deg,#0d2010,#1a3f1a);
+  border:1px solid rgba(74,222,128,0.2);border-radius:16px;
+  padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.fech-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent3);margin-bottom:3px}
+.fech-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px}
+.card-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:14px}
+.kpi-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent3)}
+.kpi-val.g{color:var(--accent)}.kpi-val.r{color:var(--red)}.kpi-val.a{color:var(--yellow)}
+
+.nf-table{width:100%;border-collapse:collapse;font-size:13px}
+.nf-table th{text-align:left;padding:7px 10px;border-bottom:1px solid var(--border2);font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+.nf-table td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
+.nf-table tr:last-child td{border:none}
+.nf-table tr:hover td{background:rgba(74,222,128,0.03)}
+.badge{display:inline-block;padding:2px 8px;border-radius:100px;font-family:'DM Mono',monospace;font-size:10px}
+.badge-g{background:rgba(74,222,128,0.12);color:var(--accent)}
+.badge-a{background:rgba(251,191,36,0.12);color:var(--yellow)}
+.badge-r{background:rgba(248,113,113,0.12);color:var(--red)}
+
+.resumo-table{width:100%;border-collapse:collapse;font-size:14px}
+.resumo-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
+.resumo-table tr:last-child td{border:none;font-weight:700;color:var(--accent)}
+.resumo-table .r-label{color:var(--text2);font-family:'DM Mono',monospace;font-size:12px}
+.resumo-table .r-val{text-align:right;color:var(--text);font-family:'DM Serif Display',serif;font-size:16px}
+
+.btn-full{
+  width:100%;padding:12px;background:var(--accent);border:none;
+  border-radius:10px;color:#0f1a0f;font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-full:hover{background:var(--accent2)}
+.btn-full:disabled{opacity:0.5;cursor:default}
+.btn-sec{
+  flex:1;padding:11px;background:transparent;border:1px solid var(--border2);
+  border-radius:10px;color:var(--text2);font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;
+}
+.btn-sec:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── NFS MANUAL ── */
+.nf-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.f-group{display:flex;flex-direction:column;gap:4px}
+.f-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted)}
+.f-input,.f-select{
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  padding:9px 12px;color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:13px;outline:none;transition:border-color 0.2s;width:100%;
+}
+.f-input:focus,.f-select:focus{border-color:var(--accent)}
+.f-input::placeholder{color:var(--muted)}
+.f-select{cursor:pointer;background-color:var(--bg3)}
+
+/* Lista de NFs */
+.nf-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto}
+.nf-list::-webkit-scrollbar{width:3px}
+.nf-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+.nf-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;background:var(--bg3);
+  border:1px solid var(--border);border-radius:9px;font-size:13px;
+}
+.nf-item-tipo{font-family:'DM Mono',monospace;font-size:10px;padding:2px 8px;border-radius:100px;flex-shrink:0}
+.nf-item-desc{flex:1;color:var(--text2)}
+.nf-item-val{font-family:'DM Serif Display',serif;font-size:15px;color:var(--accent);flex-shrink:0}
+.nf-item-del{background:transparent;border:none;color:var(--muted);cursor:pointer;padding:2px 6px;border-radius:5px;transition:all 0.15s;font-size:13px}
+.nf-item-del:hover{color:var(--red)}
+
+/* ── DAS ── */
+.das-card{
+  background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(251,191,36,0.03));
+  border:1px solid rgba(251,191,36,0.25);border-radius:14px;padding:18px 20px;
+}
+.das-val{font-family:'DM Serif Display',serif;font-size:36px;color:var(--yellow);margin:8px 0}
+.das-status{font-family:'DM Mono',monospace;font-size:12px;display:flex;align-items:center;gap:6px}
+
+/* ── ALERTAS ── */
+.alert{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:11px;margin-bottom:8px}
+.alert.red{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25)}
+.alert.yellow{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2)}
+.alert.green{background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2)}
+.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:13px;font-weight:700;margin-bottom:2px}
+.alert.red .alert-title{color:var(--red)}
+.alert.yellow .alert-title{color:var(--yellow)}
+.alert.green .alert-title{color:var(--accent)}
+.alert-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);line-height:1.5}
+
+/* ── OMIE PANEL ── */
+.omie-wrap{max-width:800px;margin:0 auto;padding:20px;overflow-y:auto;height:100%;display:flex;flex-direction:column;gap:16px}
+.omie-wrap::-webkit-scrollbar{width:3px}
+.omie-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+
+.omie-status-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.omie-connected{display:flex;align-items:center;gap:10px}
+.omie-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(74,222,128,0.5);flex-shrink:0}
+.omie-dot.off{background:var(--muted);box-shadow:none}
+.omie-label{font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)}
+.omie-label.off{color:var(--muted)}
+
+.credentials-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+
+.omie-data-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.omie-data-card{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:14px 16px}
+.odc-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.odc-list{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto}
+.odc-item{padding:8px 10px;background:var(--bg2);border-radius:7px;font-size:12px;color:var(--text2);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.odc-item-val{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);flex-shrink:0}
+.odc-item-badge{font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:100px}
+
+/* ── MODAL ── */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+#modal.open{display:flex}
+.modal-card{background:var(--surface);border:1px solid var(--border2);border-radius:18px;width:100%;max-width:560px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:slideUp 0.3s ease;box-shadow:0 24px 64px rgba(0,0,0,0.5)}
+.modal-header{padding:20px 24px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent3)}
+.modal-title span{font-style:italic;color:var(--accent)}
+.btn-close{background:transparent;border:1px solid var(--border);border-radius:7px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all 0.2s}
+.btn-close:hover{border-color:var(--red);color:var(--red)}
+.modal-body{padding:20px 24px;overflow-y:auto;flex:1}
+.modal-footer{padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;background:var(--bg2)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:#0f1a0f;padding:10px 20px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;box-shadow:0 8px 24px rgba(74,222,128,0.3);z-index:500;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.toast.show{opacity:1}
+
+/* ── LOADING ── */
+#loading{position:fixed;inset:0;background:rgba(15,26,15,0.85);backdrop-filter:blur(3px);z-index:400;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+#loading.open{display:flex}
+.spin{width:40px;height:40px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+.loading-txt{font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);animation:pulse 1.5s infinite}
+
+/* ── SILENT INDICATOR ── */
+#silent{position:fixed;bottom:72px;right:16px;background:var(--surface);border:1px solid var(--border2);border-radius:100px;padding:6px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);display:none;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:490}
+#silent.show{display:flex}
+
+/* ── RESPONSIVE MOBILE ── */
+@media(max-width:680px){
+  #app{padding-bottom:64px}
+  .top-nav{height:50px;padding:0 14px}
+  .nav-name{font-size:15px}
+  .nav-sub{display:none}
+  .nav-tabs{
+    position:fixed;bottom:0;left:0;right:0;z-index:200;
+    background:var(--bg2);border-top:1px solid var(--border);
+    border-radius:0;padding:6px 8px env(safe-area-inset-bottom);
+    display:flex;gap:2px;box-shadow:0 -2px 16px rgba(0,0,0,0.3);
+  }
+  .nav-tab{flex:1;flex-direction:column;padding:6px 4px;border-radius:10px;font-size:10px;gap:2px;justify-content:center;height:auto}
+  .nav-actions{gap:4px}
+  .hdr-btn{padding:5px 8px;font-size:0}
+  .hdr-btn svg{width:16px;height:16px;margin:0}
+  .hdr-btn.primary{font-size:11px;padding:5px 10px}
+  .messages-inner{padding:0 14px}
+  .msg-bubble{font-size:13px}
+  .msg-content{max-width:92%}
+  .input-area{padding:8px 14px 10px}
+  #user-input{font-size:15px}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .nf-form{grid-template-columns:1fr}
+  .credentials-form{grid-template-columns:1fr}
+  .omie-data-grid{grid-template-columns:1fr}
+  .modal-card{border-radius:16px 16px 0 0;position:fixed;bottom:0;left:0;right:0;max-height:88vh;max-width:100%}
+  #modal{align-items:flex-end;padding:0}
+  .toast{bottom:72px}
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes glow{0%,100%{box-shadow:0 0 8px rgba(74,222,128,0.3)}50%{box-shadow:0 0 16px rgba(74,222,128,0.6)}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <div class="nav-brand">
+    <div class="nav-avatar">🌿</div>
+    <div>
+      <div class="nav-name">Ana · Monkai</div>
+      <div class="nav-sub"><div class="pip"></div>Agente Financeira · Vinhedo/SP</div>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-tab="chat">💬 Chat</button>
+    <button class="nav-tab" data-tab="fechamento">📋 Fechamento</button>
+    <button class="nav-tab" data-tab="omie">🔗 OMIE</button>
+  </div>
+
+  <div class="nav-actions">
+    <button class="hdr-btn" id="btn-relatorio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span>Relatório</span>
+    </button>
+    <button class="hdr-btn primary" id="btn-fechar-mes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Fechar Mês
+    </button>
+    <button class="hdr-btn" onclick="limparTudo()" title="Reiniciar">🔄</button>
+  </div>
+</div>
+
+<!-- ════ TAB: CHAT ════ -->
+<div class="tab-page active" id="tab-chat">
+  <div class="messages-area" id="messages-area">
+    <div class="messages-inner" id="messages-inner"></div>
+  </div>
+  <div class="input-area">
+    <div class="suggestions" id="suggestions">
+      <div class="chip">Qual o DAS deste mês?</div>
+      <div class="chip">Tenho notas em atraso?</div>
+      <div class="chip">Qual meu faturamento?</div>
+      <div class="chip">Como emito NF de venda B2C?</div>
+      <div class="chip">Preciso emitir o DAS até quando?</div>
+    </div>
+    <div class="input-inner">
+      <div class="input-wrap">
+        <textarea id="user-input" rows="1" placeholder="Pergunte à Ana sobre DAS, notas fiscais, faturamento…"></textarea>
+      </div>
+      <button class="btn-send" id="btn-send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+    <div class="input-hint">Enter para enviar · Shift+Enter para nova linha</div>
+  </div>
+</div>
+
+<!-- ════ TAB: FECHAMENTO ════ -->
+<div class="tab-page" id="tab-fechamento">
+  <div class="fech-wrap">
+
+    <!-- Header -->
+    <div class="fech-header">
+      <div>
+        <div class="fech-title">Fechamento Mensal</div>
+        <div class="fech-sub" id="fech-mes-label">Carregando…</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="hdr-btn" id="btn-buscar-omie" onclick="buscarDadosOmie()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M21 12a9 9 0 11-3.2-6.8"/></svg>
+          Buscar do OMIE
+        </button>
+        <button class="hdr-btn primary" onclick="gerarPacoteContadora()">
+          📤 Gerar pacote
+        </button>
+      </div>
+    </div>
+
+    <!-- Alertas -->
+    <div id="alertas-container"></div>
+
+    <!-- KPIs -->
+    <div class="card">
+      <div class="card-label">📊 Resumo do mês</div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-label">Faturamento bruto</div><div class="kpi-val g" id="kpi-fat">R$ —</div></div>
+        <div class="kpi-card"><div class="kpi-label">Custo de produção</div><div class="kpi-val r" id="kpi-custo">R$ —</div></div>
+        <div class="kpi-card"><div class="kpi-label">Margem estimada</div><div class="kpi-val a" id="kpi-margem">—</div></div>
+        <div class="kpi-card"><div class="kpi-label">DAS do mês</div><div class="kpi-val a" id="kpi-das">R$ —</div></div>
+        <div class="kpi-card"><div class="kpi-label">A receber</div><div class="kpi-val" id="kpi-receber">R$ —</div></div>
+        <div class="kpi-card"><div class="kpi-label">A pagar</div><div class="kpi-val r" id="kpi-pagar">R$ —</div></div>
+      </div>
+    </div>
+
+    <!-- DAS -->
+    <div class="das-card">
+      <div class="card-label" style="color:var(--yellow)">💛 DAS — Simples Nacional</div>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;flex-wrap:wrap">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:4px">Valor do DAS (4% sobre faturamento)</div>
+          <div class="das-val" id="das-valor">R$ —</div>
+          <div class="das-status" id="das-status">
+            <span style="color:var(--muted)">Vence todo dia 20 · informe o faturamento para calcular</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="f-group">
+            <label class="f-label">Faturamento bruto (R$)</label>
+            <input class="f-input" id="fat-input" type="number" step="0.01" placeholder="0,00" oninput="calcularDAS()" style="max-width:180px"/>
+          </div>
+          <div class="f-group">
+            <label class="f-label">DAS pago? Data</label>
+            <input class="f-input" id="das-data" type="date" style="max-width:180px"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NFs de Entrada -->
+    <div class="card">
+      <div class="card-label">📥 NFs de Entrada — o que você paga</div>
+      <div class="nf-form">
+        <div class="f-group">
+          <label class="f-label">Fornecedor / Fábrica</label>
+          <input class="f-input" id="nfe-desc" placeholder="Ex: Fábrica Sul — Industrialização"/>
+        </div>
+        <div class="f-group">
+          <label class="f-label">Tipo</label>
+          <select class="f-select" id="nfe-tipo">
+            <option value="insumo">Insumos (matéria-prima)</option>
+            <option value="industrializacao">Industrialização (fábrica)</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div class="f-group">
+          <label class="f-label">Nº NF</label>
+          <input class="f-input" id="nfe-num" placeholder="NF-001"/>
+        </div>
+        <div class="f-group">
+          <label class="f-label">Valor (R$)</label>
+          <input class="f-input" id="nfe-val" type="number" step="0.01" placeholder="0,00"/>
+        </div>
+      </div>
+      <button class="btn-full" onclick="addNFEntrada()" style="margin-bottom:12px">+ Adicionar NF de entrada</button>
+      <div class="nf-list" id="nfe-list">
+        <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);text-align:center;padding:12px">Nenhuma NF de entrada ainda.</div>
+      </div>
+      <div style="margin-top:10px;text-align:right;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)">
+        Total entradas: <span id="total-entrada" style="color:var(--red);font-size:14px">R$ 0,00</span>
+      </div>
+    </div>
+
+    <!-- NFs de Saída -->
+    <div class="card">
+      <div class="card-label">📤 NFs de Saída — o que você recebe</div>
+      <div class="nf-form">
+        <div class="f-group">
+          <label class="f-label">Cliente</label>
+          <input class="f-input" id="nfs-desc" placeholder="Ex: Distribuidora ABC ou Consumidor Final"/>
+        </div>
+        <div class="f-group">
+          <label class="f-label">Canal</label>
+          <select class="f-select" id="nfs-tipo">
+            <option value="b2b">B2B (empresa/distribuidor)</option>
+            <option value="b2c">B2C (pessoa física)</option>
+            <option value="ml">Mercado Livre</option>
+          </select>
+        </div>
+        <div class="f-group">
+          <label class="f-label">Nº NF</label>
+          <input class="f-input" id="nfs-num" placeholder="NF-001"/>
+        </div>
+        <div class="f-group">
+          <label class="f-label">Valor (R$)</label>
+          <input class="f-input" id="nfs-val" type="number" step="0.01" placeholder="0,00"/>
+        </div>
+      </div>
+      <button class="btn-full" onclick="addNFSaida()" style="margin-bottom:12px">+ Adicionar NF de saída</button>
+      <div class="nf-list" id="nfs-list">
+        <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);text-align:center;padding:12px">Nenhuma NF de saída ainda.</div>
+      </div>
+      <div style="margin-top:10px;text-align:right;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)">
+        Total saídas: <span id="total-saida" style="color:var(--accent);font-size:14px">R$ 0,00</span>
+      </div>
+    </div>
+
+    <!-- Botões finais -->
+    <div style="display:flex;gap:8px">
+      <button class="btn-sec" onclick="gerarPacoteContadora()">📋 Ver resumo completo</button>
+      <button class="btn-full" style="flex:1" onclick="enviarEmail()">📧 Enviar para contadora</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════ TAB: OMIE ════ -->
+<div class="tab-page" id="tab-omie">
+  <div class="omie-wrap">
+
+    <!-- Status conexão -->
+    <div class="omie-status-card">
+      <div class="omie-connected">
+        <div class="omie-dot off" id="omie-dot"></div>
+        <div>
+          <div class="omie-label off" id="omie-label">OMIE desconectado</div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px" id="omie-empresa-label">Configure as credenciais abaixo</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="hdr-btn" id="btn-testar" onclick="testarConexao()">🔌 Testar conexão</button>
+        <button class="hdr-btn primary" onclick="sincronizarOmie()">🔄 Sincronizar</button>
+      </div>
+    </div>
+
+    <!-- Credenciais -->
+    <div class="card">
+      <div class="card-label">🔑 Credenciais da API OMIE</div>
+      <div style="background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.2);border-radius:9px;padding:10px 14px;margin-bottom:14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--yellow);line-height:1.6">
+        ⚠️ Suas credenciais ficam salvas <strong>só neste dispositivo</strong> (localStorage). Nunca as compartilhe.
+      </div>
+      <div class="credentials-form">
+        <div class="f-group">
+          <label class="f-label">App Key</label>
+          <input class="f-input" id="omie-key" placeholder="Ex: 1234567890123" style="font-family:'DM Mono',monospace"/>
+        </div>
+        <div class="f-group">
+          <label class="f-label">App Secret</label>
+          <input class="f-input" id="omie-secret" type="password" placeholder="••••••••••••••••••••••••••••••••"/>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-full" onclick="salvarCredenciais()">💾 Salvar credenciais</button>
+        <button class="btn-sec" onclick="limparCredenciais()">🗑️ Limpar</button>
+      </div>
+      <div style="margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);line-height:1.6">
+        Para encontrar: OMIE → ícone de grade (9 pontinhos) → Configurações → API → Minhas Aplicações → selecione ou crie uma aplicação
+      </div>
+    </div>
+
+    <!-- Dados do OMIE -->
+    <div class="card">
+      <div class="card-label">📊 Dados consultados do OMIE</div>
+      <div class="omie-data-grid" id="omie-data-grid">
+        <div class="omie-data-card">
+          <div class="odc-title">📥 Contas a Receber</div>
+          <div class="odc-list" id="odc-receber">
+            <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:center;padding:12px">Sincronize para ver os dados</div>
+          </div>
+        </div>
+        <div class="omie-data-card">
+          <div class="odc-title">📤 Contas a Pagar</div>
+          <div class="odc-list" id="odc-pagar">
+            <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:center;padding:12px">Sincronize para ver os dados</div>
+          </div>
+        </div>
+        <div class="omie-data-card">
+          <div class="odc-title">🧾 NF-e Emitidas</div>
+          <div class="odc-list" id="odc-nfe">
+            <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:center;padding:12px">Sincronize para ver os dados</div>
+          </div>
+        </div>
+        <div class="omie-data-card">
+          <div class="odc-title">📦 Pedidos de Venda</div>
+          <div class="odc-list" id="odc-pedidos">
+            <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:center;padding:12px">Sincronize para ver os dados</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- MODAL -->
+<div id="modal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Resumo</div>
+      <button class="btn-close" onclick="fecharModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<div id="loading"><div class="spin"></div><div class="loading-txt" id="loading-txt">Carregando…</div></div>
+<div class="toast" id="toast"><span id="toast-msg"></span></div>
+<div id="silent"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;flex-shrink:0"><path d="M21 12a9 9 0 11-3.2-6.8"/></svg><span id="silent-txt">Consultando OMIE…</span></div>
+
+<script>
+// ══ CONFIG ══
+const CFG = {
+  empresa: 'Guaraná Monkai',
+  cnpj: '65.341.054/0001-66',
+  emailContadora: 'contabilidade@monticelli.com.br',
+  aliquotaDAS: 0.04,
+  vencDAS: 20,
+};
+
+// ══ STATE ══
+let history = [], isLoading = false;
+let nfsEntrada = [], nfsSaida = [];
+let omieKey = '', omieSecret = '';
+let omieConectado = false;
+let dadosOmie = { receber: [], pagar: [], nfe: [], pedidos: [] };
+
+// ══ OMIE API ══
+// Usa proxy CORS para funcionar direto do arquivo (sem servidor local)
+const OMIE_PROXIES = [
+  (url, body) => fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, { method:'POST', headers:{'Content-Type':'application/json','x-requested-with':'XMLHttpRequest'}, body }),
+  (url, body) => fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, { method:'POST', headers:{'Content-Type':'application/json'}, body }),
+  (url, body) => fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body }) // direto (funciona em servidor)
+];
+
+async function callOMIE(path, call, params = {}) {
+  if (!omieKey || !omieSecret) return { erro: 'Credenciais não configuradas' };
+  const url = `https://app.omie.com.br/api/v1${path}`;
+  const body = JSON.stringify({ call, app_key: omieKey, app_secret: omieSecret, param: [params] });
+  for (const proxy of OMIE_PROXIES) {
+    try {
+      const r = await proxy(url, body);
+      if (r.ok) {
+        const data = await r.json();
+        if (!data.erro && !data.faultstring) return data;
+        return data; // retorna mesmo com erro da API OMIE
+      }
+    } catch (e) { continue; }
+  }
+  return { erro: 'Não foi possível conectar ao OMIE. Verifique sua internet.' };
+}
+
+// ══ CLAUDE ══
+const SYSTEM = `Você é a Ana, agente financeira da empresa Guaraná Monkai, uma ME (Microempresa) Sociedade Empresária Limitada optante pelo Simples Nacional, localizada em Vinhedo (SP).
+
+EMPRESA:
+- Razão social: Guaraná Monkai / Monkai BR
+- CNPJ: 65.341.054/0001-66
+- Regime: Simples Nacional — DAS mensal (alíquota ~4% Anexo II para bebidas)
+- DAS vence todo dia 20 do mês seguinte
+- Contadora: contabilidade@monticelli.com.br
+
+FLUXO OPERACIONAL:
+1. Compra de insumos com NF triangulada → vai direto para fábrica no Sul (CFOP 6.949)
+2. Fábrica emite NF de industrialização por encomenda (CFOP 5.124)
+3. Produto acabado recebido em Vinhedo
+4. Vendas: B2B (CFOP 5.101/6.101), B2C/Mercado Livre (CFOP 5.108/6.108)
+
+REGRAS FISCAIS:
+- Sempre que falar de imposto, mostre o valor em reais E a porcentagem
+- Explique termos técnicos de forma simples
+- Nunca assuma que o Silvio já sabe algo
+- Máximo 3 informações por resposta
+
+SEU TOM:
+- Analista financeira experiente explicando para um amigo jovem (20-24 anos)
+- Direta, simples, sem jargão desnecessário
+- Use exemplos em reais: "Você faturou R$ 8.000 e pagou R$ 320 de DAS (4%)"
+- Termine sempre perguntando se quer ajuda com o próximo passo
+
+OMIE:
+- Se tiver dados do OMIE, use-os na resposta
+- Oriente onde registrar cada coisa: "Isso fica em Compras → NFs de Entrada → Nova NF"`;
+
+async function callClaude(userMsg) {
+  // Adiciona contexto dos dados disponíveis
+  let contexto = '';
+  if (nfsEntrada.length || nfsSaida.length) {
+    const totE = nfsEntrada.reduce((a,n) => a + n.valor, 0);
+    const totS = nfsSaida.reduce((a,n) => a + n.valor, 0);
+    contexto = `\n\n[Dados do fechamento atual — NFs entrada: ${nfsEntrada.length} notas, total R$ ${totE.toFixed(2)} | NFs saída: ${nfsSaida.length} notas, total R$ ${totS.toFixed(2)}]`;
+  }
+  if (dadosOmie.receber.length || dadosOmie.nfe.length) {
+    contexto += `\n[OMIE sincronizado — Contas a receber: ${dadosOmie.receber.length} | NF-e: ${dadosOmie.nfe.length} | Pedidos: ${dadosOmie.pedidos.length}]`;
+  }
+
+  history.push({ role: 'user', content: userMsg + contexto });
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: SYSTEM,
+      messages: history
+    })
+  });
+  const d = await res.json();
+  if (d.error) throw new Error(d.error.message);
+  const reply = d.content[0].text;
+  history.push({ role: 'assistant', content: reply });
+  return reply;
+}
+
+// ══ CHAT UI ══
+function appendMsg(role, text) {
+  const inner = document.getElementById('messages-inner');
+  const isUser = role === 'user';
+  const m = document.createElement('div');
+  m.className = `msg ${isUser ? 'user' : 'ana'}`;
+  m.innerHTML = `
+    <div class="msg-avatar">${isUser ? '👤' : '🌿'}</div>
+    <div class="msg-content">
+      <div class="msg-sender">${isUser ? 'SILVIO' : 'ANA'}</div>
+      <div class="msg-bubble">${esc(text)}</div>
+    </div>`;
+  inner.appendChild(m);
+  if (isUser) document.getElementById('suggestions').style.display = 'none';
+  document.getElementById('messages-area').scrollTop = 99999;
+}
+
+function addTyping() {
+  const inner = document.getElementById('messages-inner');
+  const m = document.createElement('div');
+  m.className = 'msg ana'; m.id = 'typing-msg';
+  m.innerHTML = `<div class="msg-avatar">🌿</div><div class="msg-content"><div class="msg-sender">ANA</div><div id="typing-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>`;
+  inner.appendChild(m);
+  document.getElementById('messages-area').scrollTop = 99999;
+}
+function rmTyping() { document.getElementById('typing-msg')?.remove(); }
+
+async function sendMsg() {
+  const inp = document.getElementById('user-input');
+  const text = inp.value.trim();
+  if (!text || isLoading) return;
+  inp.value = ''; inp.style.height = 'auto';
+  isLoading = true;
+  document.getElementById('btn-send').disabled = true;
+  appendMsg('user', text);
+  addTyping();
+  try {
+    const reply = await callClaude(text);
+    rmTyping(); appendMsg('ana', reply);
+  } catch (e) {
+    rmTyping(); appendMsg('ana', '⚠️ Erro de conexão: ' + e.message);
+  }
+  isLoading = false;
+  document.getElementById('btn-send').disabled = false;
+  document.getElementById('user-input').focus();
+}
+
+// ══ DAS ══
+function calcularDAS() {
+  const fat = parseFloat(document.getElementById('fat-input').value) || 0;
+  const das = fat * CFG.aliquotaDAS;
+  const dasEl = document.getElementById('das-valor');
+  const statusEl = document.getElementById('das-status');
+  if (fat <= 0) {
+    dasEl.textContent = 'R$ —';
+    statusEl.innerHTML = '<span style="color:var(--muted)">Informe o faturamento para calcular</span>';
+    document.getElementById('kpi-das').textContent = 'R$ —';
+    document.getElementById('kpi-fat').textContent = 'R$ —';
+    return;
+  }
+  dasEl.textContent = 'R$ ' + das.toFixed(2).replace('.', ',');
+  document.getElementById('kpi-das').textContent = 'R$ ' + das.toFixed(2).replace('.', ',');
+  document.getElementById('kpi-fat').textContent = 'R$ ' + fat.toFixed(2).replace('.', ',');
+
+  const hoje = new Date();
+  const venc = new Date(hoje.getFullYear(), hoje.getMonth(), CFG.vencDAS);
+  const diff = Math.ceil((venc - hoje) / 86400000);
+
+  if (diff < 0) {
+    statusEl.innerHTML = `<span style="color:var(--red)">🔴 Vencido há ${Math.abs(diff)} dias — emita agora!</span>`;
+    mostrarAlerta('red', '🔴 DAS vencido!', `O DAS de R$ ${das.toFixed(2).replace('.', ',')} está vencido há ${Math.abs(diff)} dias. Emita agora no site da Receita Federal.`);
+  } else if (diff <= 5) {
+    statusEl.innerHTML = `<span style="color:var(--yellow)">🟡 Vence em ${diff} dias (dia ${CFG.vencDAS})</span>`;
+    mostrarAlerta('yellow', '🟡 DAS vencendo em breve', `O DAS de R$ ${das.toFixed(2).replace('.', ',')} vence em ${diff} dias.`);
+  } else {
+    statusEl.innerHTML = `<span style="color:var(--accent)">🟢 Vence dia ${CFG.vencDAS} — ${diff} dias restantes</span>`;
+  }
+  atualizarKPIs();
+}
+
+// ══ NFS ══
+function addNFEntrada() {
+  const desc = document.getElementById('nfe-desc').value.trim();
+  const tipo = document.getElementById('nfe-tipo').value;
+  const num  = document.getElementById('nfe-num').value.trim();
+  const val  = parseFloat(document.getElementById('nfe-val').value) || 0;
+  if (!desc || val <= 0) { showToast('Preencha fornecedor e valor.'); return; }
+  nfsEntrada.unshift({ desc, tipo, num, valor: val, id: Date.now() });
+  renderNFEntrada();
+  document.getElementById('nfe-desc').value = '';
+  document.getElementById('nfe-num').value = '';
+  document.getElementById('nfe-val').value = '';
+  atualizarKPIs();
+  salvarDados();
+}
+
+function addNFSaida() {
+  const desc = document.getElementById('nfs-desc').value.trim();
+  const tipo = document.getElementById('nfs-tipo').value;
+  const num  = document.getElementById('nfs-num').value.trim();
+  const val  = parseFloat(document.getElementById('nfs-val').value) || 0;
+  if (!desc || val <= 0) { showToast('Preencha cliente e valor.'); return; }
+  nfsSaida.unshift({ desc, tipo, num, valor: val, id: Date.now() });
+  renderNFSaida();
+  document.getElementById('nfs-desc').value = '';
+  document.getElementById('nfs-num').value = '';
+  document.getElementById('nfs-val').value = '';
+  atualizarKPIs();
+  salvarDados();
+}
+
+function tipoEntradaLabel(t) {
+  return { insumo: 'Insumo', industrializacao: 'Indust.', outro: 'Outro' }[t] || t;
+}
+function tipoSaidaLabel(t) {
+  return { b2b: 'B2B', b2c: 'B2C', ml: 'ML' }[t] || t;
+}
+function tipoCor(t) {
+  const map = { insumo: 'badge-a', industrializacao: 'badge-r', b2b: 'badge-g', b2c: 'badge-g', ml: 'badge-a', outro: '' };
+  return map[t] || '';
+}
+
+function renderNFEntrada() {
+  const list = document.getElementById('nfe-list');
+  if (!nfsEntrada.length) {
+    list.innerHTML = '<div style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--muted);text-align:center;padding:12px">Nenhuma NF de entrada ainda.</div>';
+    document.getElementById('total-entrada').textContent = 'R$ 0,00';
+    return;
+  }
+  const total = nfsEntrada.reduce((a, n) => a + n.valor, 0);
+  list.innerHTML = nfsEntrada.map(n => `
+    <div class="nf-item">
+      <span class="nf-item-tipo badge ${tipoCor(n.tipo)}">${tipoEntradaLabel(n.tipo)}</span>
+      <span class="nf-item-desc">${n.desc}${n.num ? ' · ' + n.num : ''}</span>
+      <span class="nf-item-val">R$ ${n.valor.toFixed(2).replace('.', ',')}</span>
+      <button class="nf-item-del" onclick="rmNFE(${n.id})">✕</button>
+    </div>`).join('');
+  document.getElementById('total-entrada').textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+}
+
+function renderNFSaida() {
+  const list = document.getElementById('nfs-list');
+  if (!nfsSaida.length) {
+    list.innerHTML = '<div style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--muted);text-align:center;padding:12px">Nenhuma NF de saída ainda.</div>';
+    document.getElementById('total-saida').textContent = 'R$ 0,00';
+    return;
+  }
+  const total = nfsSaida.reduce((a, n) => a + n.valor, 0);
+  list.innerHTML = nfsSaida.map(n => `
+    <div class="nf-item">
+      <span class="nf-item-tipo badge ${tipoCor(n.tipo)}">${tipoSaidaLabel(n.tipo)}</span>
+      <span class="nf-item-desc">${n.desc}${n.num ? ' · ' + n.num : ''}</span>
+      <span class="nf-item-val">R$ ${n.valor.toFixed(2).replace('.', ',')}</span>
+      <button class="nf-item-del" onclick="rmNFS(${n.id})">✕</button>
+    </div>`).join('');
+  document.getElementById('total-saida').textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+}
+
+function rmNFE(id) { nfsEntrada = nfsEntrada.filter(n => n.id !== id); renderNFEntrada(); atualizarKPIs(); salvarDados(); }
+function rmNFS(id) { nfsSaida = nfsSaida.filter(n => n.id !== id); renderNFSaida(); atualizarKPIs(); salvarDados(); }
+
+function atualizarKPIs() {
+  const totS = nfsSaida.reduce((a, n) => a + n.valor, 0);
+  const totE = nfsEntrada.reduce((a, n) => a + n.valor, 0);
+  const fat  = parseFloat(document.getElementById('fat-input').value) || totS;
+  const margem = fat > 0 ? ((fat - totE) / fat * 100).toFixed(1) : 0;
+  const das  = fat * CFG.aliquotaDAS;
+
+  if (totS > 0) document.getElementById('kpi-fat').textContent = 'R$ ' + totS.toFixed(2).replace('.', ',');
+  if (totE > 0) document.getElementById('kpi-custo').textContent = 'R$ ' + totE.toFixed(2).replace('.', ',');
+  document.getElementById('kpi-margem').textContent = fat > 0 ? margem + '%' : '—';
+}
+
+// ══ ALERTAS ══
+function mostrarAlerta(tipo, titulo, sub) {
+  const c = document.getElementById('alertas-container');
+  // Evita duplicar o mesmo alerta
+  if (c.querySelector(`.alert.${tipo}`)) return;
+  const a = document.createElement('div');
+  a.className = `alert ${tipo}`;
+  const icones = { red: '🔴', yellow: '🟡', green: '🟢' };
+  a.innerHTML = `<div class="alert-icon">${icones[tipo]}</div><div><div class="alert-title">${titulo}</div><div class="alert-sub">${sub}</div></div>`;
+  c.prepend(a);
+}
+
+// ══ PACOTE CONTADORA ══
+async function gerarPacoteContadora() {
+  const mes = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  const totE = nfsEntrada.reduce((a, n) => a + n.valor, 0);
+  const totS = nfsSaida.reduce((a, n) => a + n.valor, 0);
+  const fat  = parseFloat(document.getElementById('fat-input').value) || totS;
+  const das  = fat * CFG.aliquotaDAS;
+  const dasPago = document.getElementById('das-data').value;
+  const margem = fat > 0 ? ((fat - totE) / fat * 100).toFixed(1) : '—';
+
+  showLoading('Ana gerando o pacote…');
+
+  // Pede para a Ana gerar o resumo
+  const prompt = `Gere o pacote de fechamento mensal de ${mes} da Guaraná Monkai para a contadora.
+
+Dados:
+- NFs de entrada (${nfsEntrada.length}): ${nfsEntrada.map(n => `${n.desc} R$${n.valor.toFixed(2)}`).join(', ') || 'nenhuma'}
+- Total entradas: R$ ${totE.toFixed(2)}
+- NFs de saída (${nfsSaida.length}): ${nfsSaida.map(n => `${n.desc} R$${n.valor.toFixed(2)}`).join(', ') || 'nenhuma'}
+- Total saídas (faturamento): R$ ${totS.toFixed(2)}
+- Faturamento informado: R$ ${fat.toFixed(2)}
+- DAS (4%): R$ ${das.toFixed(2)}
+- DAS pago em: ${dasPago || 'não informado'}
+- Margem estimada: ${margem}%
+
+Gere um resumo claro e organizado pronto para enviar para a contadora, com: lista de NFs, DAS, faturamento, custo, margem e observações fiscais relevantes para o Simples Nacional.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const d = await res.json();
+    hideLoading();
+    const texto = d.content[0].text;
+
+    // Renderiza no modal
+    document.getElementById('modal-title').innerHTML = `Fechamento <span>${mes}</span>`;
+    document.getElementById('modal-body').innerHTML = `
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;font-family:'DM Mono',monospace;font-size:12px;color:var(--text2);white-space:pre-wrap;line-height:1.75;margin-bottom:16px">${esc(texto)}</div>
+      <div class="card-label">📊 Tabela resumo</div>
+      <table class="resumo-table">
+        <tr><td class="r-label">NFs de entrada</td><td class="r-val">${nfsEntrada.length} notas</td></tr>
+        <tr><td class="r-label">Total entradas</td><td class="r-val" style="color:var(--red)">R$ ${totE.toFixed(2).replace('.', ',')}</td></tr>
+        <tr><td class="r-label">NFs de saída</td><td class="r-val">${nfsSaida.length} notas</td></tr>
+        <tr><td class="r-label">Faturamento bruto</td><td class="r-val" style="color:var(--accent)">R$ ${fat.toFixed(2).replace('.', ',')}</td></tr>
+        <tr><td class="r-label">DAS (4%)</td><td class="r-val" style="color:var(--yellow)">R$ ${das.toFixed(2).replace('.', ',')}</td></tr>
+        <tr><td class="r-label">DAS pago em</td><td class="r-val">${dasPago || '—'}</td></tr>
+        <tr><td class="r-label">Margem estimada</td><td class="r-val">${margem}%</td></tr>
+      </table>`;
+    document.getElementById('modal-footer').innerHTML = `
+      <button class="btn-sec" onclick="fecharModal()">Fechar</button>
+      <button class="btn-full" style="flex:1" onclick="enviarEmail()">📧 Enviar para contadora</button>`;
+    document.getElementById('modal').classList.add('open');
+  } catch (e) {
+    hideLoading();
+    showToast('⚠️ Erro ao gerar pacote: ' + e.message);
+  }
+}
+
+function enviarEmail() {
+  const mes = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  const totE = nfsEntrada.reduce((a, n) => a + n.valor, 0);
+  const totS = nfsSaida.reduce((a, n) => a + n.valor, 0);
+  const fat  = parseFloat(document.getElementById('fat-input').value) || totS;
+  const das  = fat * CFG.aliquotaDAS;
+  const dasPago = document.getElementById('das-data').value;
+
+  const corpo = `Olá,
+
+Segue o fechamento de ${mes} da Guaraná Monkai (CNPJ: ${CFG.cnpj}).
+
+NOTAS FISCAIS DE ENTRADA (${nfsEntrada.length}):
+${nfsEntrada.map(n => `• ${n.desc}${n.num ? ' | NF: ' + n.num : ''} | R$ ${n.valor.toFixed(2)}`).join('\n') || '(nenhuma)'}
+Total entradas: R$ ${totE.toFixed(2)}
+
+NOTAS FISCAIS DE SAÍDA (${nfsSaida.length}):
+${nfsSaida.map(n => `• ${n.desc}${n.num ? ' | NF: ' + n.num : ''} | R$ ${n.valor.toFixed(2)}`).join('\n') || '(nenhuma)'}
+Total saídas: R$ ${totS.toFixed(2)}
+
+DAS: R$ ${das.toFixed(2)} (4% sobre R$ ${fat.toFixed(2)})
+${dasPago ? 'DAS pago em: ' + new Date(dasPago).toLocaleDateString('pt-BR') : 'DAS: aguardando pagamento'}
+
+Qualquer dúvida estou à disposição.
+
+Att,
+Silvio — Guaraná Monkai`;
+
+  const subject = encodeURIComponent(`Fechamento Mensal — ${mes} — Guaraná Monkai`);
+  const body = encodeURIComponent(corpo);
+  window.open(`mailto:${CFG.emailContadora}?subject=${subject}&body=${body}`, '_blank');
+  fecharModal();
+  showToast('📧 Email aberto no seu cliente de email!');
+}
+
+// ══ OMIE ══
+function salvarCredenciais() {
+  omieKey    = document.getElementById('omie-key').value.trim();
+  omieSecret = document.getElementById('omie-secret').value.trim();
+  if (!omieKey || !omieSecret) { showToast('Preencha App Key e Secret.'); return; }
+  localStorage.setItem('ana_omie_key', omieKey);
+  localStorage.setItem('ana_omie_secret', omieSecret);
+  showToast('✅ Credenciais salvas!');
+  testarConexao();
+}
+
+function limparCredenciais() {
+  localStorage.removeItem('ana_omie_key');
+  localStorage.removeItem('ana_omie_secret');
+  omieKey = omieSecret = '';
+  omieConectado = false;
+  document.getElementById('omie-key').value = '';
+  document.getElementById('omie-secret').value = '';
+  setOmieStatus(false);
+  showToast('🗑️ Credenciais removidas.');
+}
+
+function setOmieStatus(ok) {
+  const dot = document.getElementById('omie-dot');
+  const label = document.getElementById('omie-label');
+  if (ok) {
+    dot.className = 'omie-dot'; label.className = 'omie-label';
+    label.textContent = 'OMIE conectado ✓';
+    document.getElementById('omie-empresa-label').textContent = CFG.empresa + ' · ' + CFG.cnpj;
+    omieConectado = true;
+  } else {
+    dot.className = 'omie-dot off'; label.className = 'omie-label off';
+    label.textContent = 'OMIE desconectado';
+    document.getElementById('omie-empresa-label').textContent = 'Configure as credenciais';
+    omieConectado = false;
+  }
+}
+
+async function testarConexao() {
+  if (!omieKey || !omieSecret) {
+    omieKey    = document.getElementById('omie-key').value.trim();
+    omieSecret = document.getElementById('omie-secret').value.trim();
+  }
+  if (!omieKey || !omieSecret) { showToast('⚠️ Informe App Key e Secret.'); return; }
+  showSilent('Testando conexão…');
+  const res = await callOMIE('/geral/clientes/', 'ListarClientes', { pagina: 1, registros_por_pagina: 1 });
+  hideSilent();
+  if (res.erro || res.faultstring) {
+    setOmieStatus(false);
+    showToast('❌ Erro: ' + (res.faultstring || res.erro));
+    appendMsg('ana', `Não consegui me conectar ao OMIE. Erro: ${res.faultstring || res.erro}\n\nVerifica se o App Key e Secret estão corretos e se a aplicação está ativa no OMIE.`);
+  } else {
+    setOmieStatus(true);
+    showToast('✅ OMIE conectado!');
+    appendMsg('ana', `✅ Conectei ao OMIE com sucesso!\n\nAgora posso consultar suas notas fiscais, contas a receber e a pagar diretamente. Clica em "Sincronizar" para buscar os dados mais recentes.\n\nQuer que eu te ajude com o próximo passo?`);
+  }
+}
+
+async function sincronizarOmie() {
+  if (!omieConectado) { showToast('⚠️ Configure as credenciais primeiro.'); return; }
+  showLoading('Sincronizando com o OMIE…');
+
+  const [receber, pagar, nfe, pedidos] = await Promise.all([
+    callOMIE('/financas/contareceber/', 'ListarContasReceber', { pagina: 1, registros_por_pagina: 50, apenas_importado_api: 'N' }),
+    callOMIE('/financas/contapagar/', 'ListarContasPagar', { pagina: 1, registros_por_pagina: 50 }),
+    callOMIE('/produtos/nfe/', 'ListarNFe', { pagina: 1, registros_por_pagina: 50 }),
+    callOMIE('/produtos/pedido/', 'ListarPedidos', { pagina: 1, registros_por_pagina: 50 })
+  ]);
+
+  hideLoading();
+  dadosOmie.receber = receber?.conta_receber_cadastro || [];
+  dadosOmie.pagar   = pagar?.conta_pagar_cadastro || [];
+  dadosOmie.nfe     = nfe?.nfCadastro || [];
+  dadosOmie.pedidos = pedidos?.pedido_venda_produto_lista || [];
+
+  renderOmieData();
+  showToast('✅ OMIE sincronizado!');
+
+  // Importa NF-e para o fechamento automaticamente
+  if (dadosOmie.nfe.length) {
+    dadosOmie.nfe.slice(0, 10).forEach(n => {
+      const num = n.compl?.nNF ? 'NF-' + n.compl.nNF : '';
+      const val = parseFloat(n.compl?.nTotal || 0);
+      const dest = n.compl?.dest?.xNome || 'Cliente';
+      if (val > 0 && !nfsSaida.find(x => x.num === num && num)) {
+        nfsSaida.push({ desc: dest, tipo: 'b2b', num, valor: val, id: Date.now() + Math.random() });
+      }
+    });
+    renderNFSaida();
+    atualizarKPIs();
+    showToast('✅ NF-e importadas do OMIE!');
+  }
+
+  // Resumo no chat
+  const totR = dadosOmie.receber.reduce((a, c) => a + parseFloat(c.valor_documento || 0), 0);
+  const totP = dadosOmie.pagar.reduce((a, c) => a + parseFloat(c.valor_documento || 0), 0);
+  appendMsg('ana', `✅ OMIE sincronizado com sucesso!\n\nEncontrei:\n• ${dadosOmie.nfe.length} NF-e emitidas\n• ${dadosOmie.receber.length} contas a receber (R$ ${totR.toFixed(2).replace('.', ',')})\n• ${dadosOmie.pagar.length} contas a pagar (R$ ${totP.toFixed(2).replace('.', ',')})\n• ${dadosOmie.pedidos.length} pedidos de venda\n\nJá importei as NF-e para a aba Fechamento. Quer que eu te ajude com o próximo passo?`);
+  document.getElementById('kpi-receber').textContent = 'R$ ' + totR.toFixed(2).replace('.', ',');
+  document.getElementById('kpi-pagar').textContent   = 'R$ ' + totP.toFixed(2).replace('.', ',');
+}
+
+async function buscarDadosOmie() {
+  if (!omieConectado) {
+    showToast('⚠️ Conecte ao OMIE primeiro na aba 🔗 OMIE.');
+    appendMsg('ana', 'Ainda não estou conectada ao OMIE. Vai na aba 🔗 OMIE, insere o App Key e o App Secret e clica em "Salvar credenciais".');
+    // Muda para aba OMIE
+    document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+    document.querySelector('[data-tab="omie"]').classList.add('active');
+    document.getElementById('tab-omie').classList.add('active');
+    return;
+  }
+  await sincronizarOmie();
+}
+
+function renderOmieData() {
+  // Contas a receber
+  const recEl = document.getElementById('odc-receber');
+  recEl.innerHTML = dadosOmie.receber.length
+    ? dadosOmie.receber.slice(0,8).map(c => `
+      <div class="odc-item">
+        <span>${(c.nome_cliente || 'Cliente').substring(0,22)}</span>
+        <span class="odc-item-val">R$ ${parseFloat(c.valor_documento||0).toFixed(2).replace('.',',')}</span>
+      </div>`).join('')
+    : '<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);text-align:center;padding:8px">Sem dados</div>';
+
+  // Contas a pagar
+  const pagEl = document.getElementById('odc-pagar');
+  pagEl.innerHTML = dadosOmie.pagar.length
+    ? dadosOmie.pagar.slice(0,8).map(c => `
+      <div class="odc-item">
+        <span>${(c.nome_fornecedor || 'Fornecedor').substring(0,22)}</span>
+        <span class="odc-item-val" style="color:var(--red)">R$ ${parseFloat(c.valor_documento||0).toFixed(2).replace('.',',')}</span>
+      </div>`).join('')
+    : '<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);text-align:center;padding:8px">Sem dados</div>';
+
+  // NF-e
+  const nfeEl = document.getElementById('odc-nfe');
+  nfeEl.innerHTML = dadosOmie.nfe.length
+    ? dadosOmie.nfe.slice(0,8).map(n => `
+      <div class="odc-item">
+        <span>${(n.compl?.dest?.xNome || 'Cliente').substring(0,20)}</span>
+        <span class="odc-item-badge badge badge-g">Emitida</span>
+      </div>`).join('')
+    : '<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);text-align:center;padding:8px">Sem dados</div>';
+
+  // Pedidos
+  const pedEl = document.getElementById('odc-pedidos');
+  pedEl.innerHTML = dadosOmie.pedidos.length
+    ? dadosOmie.pedidos.slice(0,8).map(p => `
+      <div class="odc-item">
+        <span>${(p.info_cliente?.razao_social || 'Cliente').substring(0,20)}</span>
+        <span class="odc-item-badge badge badge-a">${p.cabecalho?.etapa || '—'}</span>
+      </div>`).join('')
+    : '<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);text-align:center;padding:8px">Sem dados</div>';
+}
+
+// ══ RELATÓRIO MENSAL INTELIGENTE ══
+async function gerarRelatorio() {
+  const mes = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  const totE = nfsEntrada.reduce((a, n) => a + n.valor, 0);
+  const totS = nfsSaida.reduce((a, n) => a + n.valor, 0);
+  const fat  = parseFloat(document.getElementById('fat-input').value) || totS;
+  const das  = fat * CFG.aliquotaDAS;
+
+  showLoading('Ana analisando os dados…');
+  let contextoOmie = '';
+  if (omieConectado && (dadosOmie.receber.length || dadosOmie.nfe.length)) {
+    const totR = dadosOmie.receber.reduce((a,c) => a + parseFloat(c.valor_documento||0), 0);
+    const totP = dadosOmie.pagar.reduce((a,c) => a + parseFloat(c.valor_documento||0), 0);
+    contextoOmie = `\nDados OMIE: ${dadosOmie.nfe.length} NF-e | A receber: R$ ${totR.toFixed(2)} | A pagar: R$ ${totP.toFixed(2)} | ${dadosOmie.pedidos.length} pedidos`;
+  }
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM,
+        messages: [{
+          role: 'user',
+          content: `Gere um relatório financeiro completo de ${mes} da Guaraná Monkai.
+NFs entrada: ${nfsEntrada.length} | Total: R$ ${totE.toFixed(2)}
+NFs saída: ${nfsSaida.length} | Total: R$ ${totS.toFixed(2)}
+Faturamento: R$ ${fat.toFixed(2)} | DAS: R$ ${das.toFixed(2)}${contextoOmie}
+Inclua: análise de margem, alertas fiscais, recomendações para o próximo mês.`
+        }]
+      })
+    });
+    const d = await res.json();
+    hideLoading();
+    const texto = d.content[0].text;
+
+    document.getElementById('modal-title').innerHTML = `Relatório <span>${mes}</span>`;
+    document.getElementById('modal-body').innerHTML = `
+      <div style="white-space:pre-wrap;line-height:1.75;font-size:14px;color:var(--text2)">${esc(texto)}</div>`;
+    document.getElementById('modal-footer').innerHTML = `
+      <button class="btn-sec" onclick="fecharModal()">Fechar</button>
+      <button class="btn-full" style="flex:1" onclick="fecharModal();enviarEmail()">📧 Enviar para contadora</button>`;
+    document.getElementById('modal').classList.add('open');
+  } catch (e) {
+    hideLoading();
+    showToast('⚠️ Erro: ' + e.message);
+  }
+}
+
+// ══ UI HELPERS ══
+function fecharModal() { document.getElementById('modal').classList.remove('open'); }
+function showLoading(t = 'Carregando…') { document.getElementById('loading-txt').textContent = t; document.getElementById('loading').classList.add('open'); }
+function hideLoading() { document.getElementById('loading').classList.remove('open'); }
+function showSilent(t) { document.getElementById('silent-txt').textContent = t; document.getElementById('silent').classList.add('show'); }
+function hideSilent() { document.getElementById('silent').classList.remove('show'); }
+function showToast(m) { document.getElementById('toast-msg').textContent = m; document.getElementById('toast').classList.add('show'); setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000); }
+function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>'); }
+
+// ══ PERSISTÊNCIA ══
+const DB = 'ana_monkai_v1';
+function salvarDados() {
+  try {
+    localStorage.setItem(DB, JSON.stringify({ nfsEntrada, nfsSaida }));
+  } catch (e) { console.warn(e); }
+}
+function carregarDados() {
+  try {
+    const raw = localStorage.getItem(DB);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.nfsEntrada) nfsEntrada = d.nfsEntrada;
+    if (d.nfsSaida) nfsSaida = d.nfsSaida;
+  } catch (e) { console.warn(e); }
+}
+function limparTudo() {
+  if (!confirm('Limpar conversa e reiniciar?')) return;
+  history = [];
+  document.getElementById('messages-inner').innerHTML = '';
+  document.getElementById('suggestions').style.display = 'flex';
+  setTimeout(() => appendMsg('ana', 'Conversa reiniciada! Como posso te ajudar? 🌿'), 200);
+}
+
+// ══ INIT ══
+document.querySelectorAll('.nav-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+document.getElementById('btn-send').addEventListener('click', sendMsg);
+document.getElementById('user-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+});
+document.getElementById('user-input').addEventListener('input', function () {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 110) + 'px';
+});
+document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+  document.getElementById('user-input').value = c.textContent;
+  sendMsg();
+}));
+
+document.getElementById('btn-relatorio').addEventListener('click', gerarRelatorio);
+document.getElementById('btn-fechar-mes').addEventListener('click', gerarPacoteContadora);
+
+// Mês atual no fechamento
+(function () {
+  const mes = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  document.getElementById('fech-mes-label').textContent = 'Referência: ' + mes + ' · Guaraná Monkai';
+})();
+
+// Carrega credenciais salvas
+window.addEventListener('DOMContentLoaded', () => {
+  carregarDados();
+  renderNFEntrada();
+  renderNFSaida();
+  atualizarKPIs();
+
+  omieKey    = localStorage.getItem('ana_omie_key') || '';
+  omieSecret = localStorage.getItem('ana_omie_secret') || '';
+  if (omieKey) document.getElementById('omie-key').value = omieKey;
+  if (omieSecret) {
+    document.getElementById('omie-secret').value = omieSecret;
+    testarConexao();
+  }
+
+  // Alerta de DAS se estiver perto do dia 20
+  const hoje = new Date();
+  const diasParaDAS = 20 - hoje.getDate();
+  if (diasParaDAS >= 0 && diasParaDAS <= 5) {
+    mostrarAlerta('yellow', '🟡 DAS vence em breve', `O DAS vence dia 20. Faltam ${diasParaDAS} dias. Informe o faturamento para calcular o valor.`);
+  }
+
+  // Boas-vindas
+  setTimeout(() => appendMsg('ana', `Oi, Silvio! 👋 Sou a Ana, sua agente financeira aqui na Guaraná Monkai.
+
+Estou pronta para te ajudar com:
+• 💬 Dúvidas sobre DAS, notas fiscais e impostos
+• 📋 Organizar o fechamento mensal para a contadora
+• 🔗 Conectar ao OMIE para buscar dados automáticos
+
+Para conectar ao OMIE, vai na aba 🔗 OMIE e insere suas credenciais. Não precisa de desenvolvedor — funciona direto aqui!
+
+Com o que posso te ajudar hoje?`), 400);
+});
+</script>
+</body>
+</html>
