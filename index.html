@@ -998,7 +998,7 @@ function showLoading(t='Carregando…'){document.getElementById('loading-txt').t
 function hideLoading(){document.getElementById('loading').classList.remove('open');}
 function showToast(m){document.getElementById('toast-msg').textContent=m;document.getElementById('toast').classList.add('show');setTimeout(()=>document.getElementById('toast').classList.remove('show'),3000);}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
-function logout(){document.getElementById('login-screen').style.display='flex';pinAtual='';atualizarDots();}
+function logout(){}
  
 // ══ PERSISTÊNCIA ══
 const DB='ana_monkai_v3';
