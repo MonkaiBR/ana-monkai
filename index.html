@@ -257,22 +257,7 @@ body{color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direct
 </head>
 <body>
  
-<!-- ══ LOGIN ══ -->
-<div id="login-screen" style="position:fixed;inset:0;background:#0f1a0f;z-index:999;display:flex;align-items:center;justify-content:center">
-  <div style="background:#1e2a1e;border:1px solid #3a4f3a;border-radius:20px;padding:36px 32px;max-width:320px;width:90%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,0.5)">
-    <div style="font-size:48px;margin-bottom:12px">🌿</div>
-    <div style="font-family:'DM Serif Display',serif;font-size:26px;color:#bbf7d0;margin-bottom:4px">Ana · Monkai</div>
-    <div style="font-family:'DM Mono',monospace;font-size:11px;color:#6a8a6a;margin-bottom:24px">Agente Financeira · Vinhedo/SP</div>
-    <input type="password" id="senha-input" placeholder="Digite a senha" 
-      style="width:100%;background:#1c2a1c;border:1.5px solid #3a4f3a;border-radius:10px;padding:13px 16px;color:#e8f0e8;font-family:'DM Sans',sans-serif;font-size:16px;outline:none;text-align:center;margin-bottom:12px;display:block"/>
-    <button id="btn-entrar"
-      style="width:100%;padding:13px;background:#4ade80;border:none;border-radius:10px;color:#0f1a0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">
-      Entrar →
-    </button>
-    <div id="login-erro" style="font-family:'DM Mono',monospace;font-size:11px;color:#f87171;min-height:16px"></div>
-    <div style="font-family:'DM Mono',monospace;font-size:10px;color:#6a8a6a;margin-top:10px">Senha padrão: monkai</div>
-  </div>
-</div>
+<!-- app começa aqui -->
  
 <div id="app">
 <!-- TOP NAV -->
@@ -299,7 +284,6 @@ body{color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direct
       <span>Excel</span>
     </button>
     <button class="hdr-btn primary" id="btn-fechar-mes">📋 Fechar Mês</button>
-    <button class="hdr-btn" onclick="logout()" title="Sair">🔒</button>
   </div>
 </div>
  
@@ -643,36 +627,8 @@ let dadosOmie={receber:[],pagar:[],nfe:[],pedidos:[]};
 let graficoVendas=null;
  
 // ══ LOGIN ══
-const SENHA_PADRAO = 'monkai';
-function initPIN(){
-  const input = document.getElementById('senha-input');
-  const btn   = document.getElementById('btn-entrar');
-  const erro  = document.getElementById('login-erro');
-  function tentar(){
-    const senha = input.value.trim();
-    const senhaSalva = localStorage.getItem('ana_senha') || SENHA_PADRAO;
-    if(!senha){ erro.textContent='Digite a senha.'; return; }
-    if(senha === senhaSalva){
-      erro.textContent='';
-      input.value='';
-      document.getElementById('login-screen').style.display='none';
-      iniciarApp();
-    } else {
-      erro.textContent='❌ Senha incorreta.';
-      input.value='';
-      input.focus();
-    }
-  }
-  btn.addEventListener('click', tentar);
-  input.addEventListener('keydown', e=>{ if(e.key==='Enter') tentar(); });
-  input.focus();
-}
-function logout(){
-  document.getElementById('login-screen').style.display='flex';
-  const input=document.getElementById('senha-input');
-  if(input){input.value='';setTimeout(()=>input.focus(),200);}
-  document.getElementById('login-erro').textContent='';
-}
+function initPIN(){ iniciarApp(); }
+function logout(){}
  
 // ══ OMIE PROXY ══
 const PROXIES=[
