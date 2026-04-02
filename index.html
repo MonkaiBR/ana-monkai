@@ -262,29 +262,19 @@ body{color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direct
   <div class="login-card">
     <div class="login-logo">🌿</div>
     <div class="login-title">Ana · Monkai</div>
-    <div class="login-sub" id="login-sub">Digite seu PIN de 4 dígitos</div>
-    <div class="pin-dots" id="pin-dots">
-      <div class="pin-dot" id="d0"></div>
-      <div class="pin-dot" id="d1"></div>
-      <div class="pin-dot" id="d2"></div>
-      <div class="pin-dot" id="d3"></div>
+    <div class="login-sub" id="login-sub">Digite sua senha para entrar</div>
+    <div style="margin:20px 0;display:flex;flex-direction:column;gap:10px">
+      <input type="password" id="senha-input" placeholder="Senha" 
+        style="background:var(--bg3);border:1.5px solid var(--border2);border-radius:10px;padding:13px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;outline:none;text-align:center;letter-spacing:0.1em;width:100%;transition:border-color 0.2s"
+        onkeydown="if(event.key==='Enter')tentarEntrar()"/>
+      <button onclick="tentarEntrar()" 
+        style="padding:13px;background:var(--accent);border:none;border-radius:10px;color:#0f1a0f;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;width:100%">
+        Entrar →
+      </button>
     </div>
-    <div class="pin-grid" id="pin-grid">
-      <button class="pin-btn" id="pb1">1</button>
-      <button class="pin-btn" id="pb2">2</button>
-      <button class="pin-btn" id="pb3">3</button>
-      <button class="pin-btn" id="pb4">4</button>
-      <button class="pin-btn" id="pb5">5</button>
-      <button class="pin-btn" id="pb6">6</button>
-      <button class="pin-btn" id="pb7">7</button>
-      <button class="pin-btn" id="pb8">8</button>
-      <button class="pin-btn" id="pb9">9</button>
-      <button class="pin-btn del" id="pb-del">⌫</button>
-      <button class="pin-btn" id="pb0">0</button>
-      <button class="pin-btn" style="opacity:0;pointer-events:none"></button>
-    </div>
-    <div class="login-hint" id="login-hint">Agente Financeira · Guaraná Monkai · Vinhedo/SP</div>
-    <div class="login-setup" id="login-setup" style="display:none">Criar PIN</div>
+    <div id="login-erro" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--red);min-height:16px;margin-bottom:8px"></div>
+    <div class="login-hint">Agente Financeira · Guaraná Monkai · Vinhedo/SP</div>
+    <div id="login-setup-txt" style="margin-top:12px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)"></div>
   </div>
 </div>
  
@@ -656,44 +646,41 @@ let omieKey='',omieSecret='',omieConectado=false;
 let dadosOmie={receber:[],pagar:[],nfe:[],pedidos:[]};
 let graficoVendas=null;
  
-// ══ PIN ══
-let pinAtual='',pinSalvo='',modoSetup=false,etapaSetup=0,pin1Temp='';
+// ══ LOGIN ══
+const SENHA_PADRAO = 'monkai';
 function initPIN(){
-  pinSalvo=localStorage.getItem('ana_pin')||'';
-  if(!pinSalvo){
-    document.getElementById('login-sub').textContent='Crie um PIN de 4 dígitos';
-    document.getElementById('login-setup').style.display='block';
-    modoSetup=true;etapaSetup=1;
+  const senhaSalva = localStorage.getItem('ana_senha') || SENHA_PADRAO;
+  const setup = document.getElementById('login-setup-txt');
+  if(!localStorage.getItem('ana_senha')){
+    setup.textContent = 'Senha padrão: monkai — troque depois nas configurações';
   }
-  // Eventos dos botões via addEventListener — mais confiável que onclick
-  ['1','2','3','4','5','6','7','8','9','0'].forEach(n=>{
-    const btn=document.getElementById('pb'+n);
-    if(btn) btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();pinPress(n);});
-  });
-  const del=document.getElementById('pb-del');
-  if(del) del.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();pinDel();});
-  const setup=document.getElementById('login-setup');
-  if(setup) setup.addEventListener('click',setupPIN);
+  setTimeout(()=>document.getElementById('senha-input')?.focus(), 300);
 }
-function pinPress(d){
-  if(pinAtual.length>=4)return;
-  pinAtual+=d;
-  atualizarDots();
-  if(pinAtual.length===4)setTimeout(verificarPIN,200);
+function tentarEntrar(){
+  const input = document.getElementById('senha-input');
+  const erro  = document.getElementById('login-erro');
+  const senha = input.value.trim();
+  const senhaSalva = localStorage.getItem('ana_senha') || SENHA_PADRAO;
+  if(!senha){ erro.textContent = 'Digite a senha.'; return; }
+  if(senha === senhaSalva){
+    erro.textContent = '';
+    input.value = '';
+    document.getElementById('login-screen').style.display = 'none';
+    iniciarApp();
+  } else {
+    erro.textContent = '❌ Senha incorreta. Tente novamente.';
+    input.value = '';
+    input.focus();
+    input.style.borderColor = 'var(--red)';
+    setTimeout(()=>input.style.borderColor='var(--border2)', 1500);
+  }
 }
-function pinDel(){pinAtual=pinAtual.slice(0,-1);atualizarDots();}
-function atualizarDots(){for(let i=0;i<4;i++){const el=document.getElementById('d'+i);el.classList.toggle('filled',i<pinAtual.length);el.classList.remove('error');}}
-function verificarPIN(){
-  if(modoSetup){
-    if(etapaSetup===1){pin1Temp=pinAtual;pinAtual='';atualizarDots();document.getElementById('login-sub').textContent='Confirme seu PIN';etapaSetup=2;}
-    else{if(pinAtual===pin1Temp){localStorage.setItem('ana_pin',pinAtual);pinSalvo=pinAtual;entrar();}else{erroPin('PINs diferentes. Tente novamente.');etapaSetup=1;pin1Temp='';document.getElementById('login-sub').textContent='Crie um PIN de 4 dígitos';}}
-  }else{if(pinAtual===pinSalvo){entrar();}else{erroPin('PIN incorreto');}}
-  pinAtual='';setTimeout(atualizarDots,300);
+function logout(){
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('senha-input').value='';
+  document.getElementById('login-erro').textContent='';
+  setTimeout(()=>document.getElementById('senha-input')?.focus(), 300);
 }
-function erroPin(msg){document.querySelectorAll('.pin-dot').forEach(d=>d.classList.add('error'));document.getElementById('login-sub').textContent=msg;document.getElementById('pin-dots').style.animation='shake 0.4s ease';setTimeout(()=>document.getElementById('pin-dots').style.animation='',500);}
-function setupPIN(){modoSetup=true;etapaSetup=1;document.getElementById('login-sub').textContent='Crie um PIN de 4 dígitos';document.getElementById('login-setup').style.display='none';}
-function entrar(){document.getElementById('login-screen').style.display='none';iniciarApp();}
-function logout(){document.getElementById('login-screen').style.display='flex';pinAtual='';atualizarDots();if(pinSalvo)document.getElementById('login-sub').textContent='Digite seu PIN de 4 dígitos';}
  
 // ══ OMIE PROXY ══
 const PROXIES=[
@@ -1103,8 +1090,6 @@ document.getElementById('user-input').addEventListener('keydown',e=>{if(e.key===
 document.getElementById('user-input').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,110)+'px';});
 document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{document.getElementById('user-input').value=c.textContent;sendMsg();}));
 document.getElementById('btn-fechar-mes').addEventListener('click',gerarPacoteContadora);
-document.addEventListener('keydown',e=>{if(document.getElementById('login-screen').style.display!=='none'){if(e.key>='0'&&e.key<='9')pinPress(e.key);else if(e.key==='Backspace')pinDel();}});
- 
 window.addEventListener('DOMContentLoaded',()=>{initPIN();});
 </script>
 </body>
