@@ -269,22 +269,22 @@ body{color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direct
       <div class="pin-dot" id="d2"></div>
       <div class="pin-dot" id="d3"></div>
     </div>
-    <div class="pin-grid">
-      <button class="pin-btn" onclick="pinPress('1')">1</button>
-      <button class="pin-btn" onclick="pinPress('2')">2</button>
-      <button class="pin-btn" onclick="pinPress('3')">3</button>
-      <button class="pin-btn" onclick="pinPress('4')">4</button>
-      <button class="pin-btn" onclick="pinPress('5')">5</button>
-      <button class="pin-btn" onclick="pinPress('6')">6</button>
-      <button class="pin-btn" onclick="pinPress('7')">7</button>
-      <button class="pin-btn" onclick="pinPress('8')">8</button>
-      <button class="pin-btn" onclick="pinPress('9')">9</button>
-      <button class="pin-btn del" onclick="pinDel()">⌫</button>
-      <button class="pin-btn" onclick="pinPress('0')">0</button>
-      <button class="pin-btn del" style="opacity:0;pointer-events:none"></button>
+    <div class="pin-grid" id="pin-grid">
+      <button class="pin-btn" id="pb1">1</button>
+      <button class="pin-btn" id="pb2">2</button>
+      <button class="pin-btn" id="pb3">3</button>
+      <button class="pin-btn" id="pb4">4</button>
+      <button class="pin-btn" id="pb5">5</button>
+      <button class="pin-btn" id="pb6">6</button>
+      <button class="pin-btn" id="pb7">7</button>
+      <button class="pin-btn" id="pb8">8</button>
+      <button class="pin-btn" id="pb9">9</button>
+      <button class="pin-btn del" id="pb-del">⌫</button>
+      <button class="pin-btn" id="pb0">0</button>
+      <button class="pin-btn" style="opacity:0;pointer-events:none"></button>
     </div>
     <div class="login-hint" id="login-hint">Agente Financeira · Guaraná Monkai · Vinhedo/SP</div>
-    <div class="login-setup" id="login-setup" onclick="setupPIN()" style="display:none">Criar PIN</div>
+    <div class="login-setup" id="login-setup" style="display:none">Criar PIN</div>
   </div>
 </div>
  
@@ -660,7 +660,20 @@ let graficoVendas=null;
 let pinAtual='',pinSalvo='',modoSetup=false,etapaSetup=0,pin1Temp='';
 function initPIN(){
   pinSalvo=localStorage.getItem('ana_pin')||'';
-  if(!pinSalvo){document.getElementById('login-sub').textContent='Crie um PIN de 4 dígitos';document.getElementById('login-setup').style.display='block';modoSetup=true;etapaSetup=1;}
+  if(!pinSalvo){
+    document.getElementById('login-sub').textContent='Crie um PIN de 4 dígitos';
+    document.getElementById('login-setup').style.display='block';
+    modoSetup=true;etapaSetup=1;
+  }
+  // Eventos dos botões via addEventListener — mais confiável que onclick
+  ['1','2','3','4','5','6','7','8','9','0'].forEach(n=>{
+    const btn=document.getElementById('pb'+n);
+    if(btn) btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();pinPress(n);});
+  });
+  const del=document.getElementById('pb-del');
+  if(del) del.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();pinDel();});
+  const setup=document.getElementById('login-setup');
+  if(setup) setup.addEventListener('click',setupPIN);
 }
 function pinPress(d){
   if(pinAtual.length>=4)return;
